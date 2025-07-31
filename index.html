@@ -2,22 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Exact Location</title>
+  <title>Send My Location</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      background: #f0f8ff;
+      background: #f5f5f5;
       margin-top: 50px;
-    }
-    #locationOutput {
-      font-size: 1.2rem;
-      margin-top: 20px;
     }
     button {
       padding: 10px 20px;
-      font-size: 1rem;
+      font-size: 16px;
       background-color: #4CAF50;
       border: none;
       color: white;
@@ -27,54 +23,60 @@
     button:hover {
       background-color: #45a049;
     }
+    #locationOutput {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
 
-  <h1>Find My Exact Location</h1>
-  <button onclick="getLocation()">Get Location</button>
+  <h1>Send My Location to Discord</h1>
+  <button onclick="getLocation()">Send Location</button>
   <div id="locationOutput"></div>
 
   <script>
+    const webhookUrl = "https://discord.com/api/webhooks/1400382122866249758/e2PIiGtfPBi0SQlRzF55kOmzGW2yUl-0HvUfjgp0Pohh9IAoWnbP-7EmGSKNbUnHgXjh";
+
     function getLocation() {
       const output = document.getElementById("locationOutput");
 
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            const accuracy = position.coords.accuracy;
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const accuracy = position.coords.accuracy;
+          const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
 
-            output.innerHTML = `
-              📍 Latitude: <strong>${latitude}</strong><br>
-              📍 Longitude: <strong>${longitude}</strong><br>
-              🎯 Accuracy: <strong>${accuracy} meters</strong><br>
-              🌍 <a href="https://www.google.com/maps?q=${latitude},${longitude}" target="_blank">View on Google Maps</a>
-            `;
-          },
-          function(error) {
-            switch(error.code) {
-              case error.PERMISSION_DENIED:
-                output.innerText = "❌ User denied the request for Geolocation.";
-                break;
-              case error.POSITION_UNAVAILABLE:
-                output.innerText = "❌ Location information is unavailable.";
-                break;
-              case error.TIMEOUT:
-                output.innerText = "❌ The request to get user location timed out.";
-                break;
-              default:
-                output.innerText = "❌ An unknown error occurred.";
-                break;
+          const content = `📍 **New Location Received**\n**Latitude:** ${lat}\n**Longitude:** ${lon}\n**Accuracy:** ${accuracy} meters\n🔗 [Google Maps](${mapUrl})`;
+
+          // Send to Discord webhook
+          fetch(webhookUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              content: content
+            })
+          }).then(response => {
+            if (response.ok) {
+              output.innerText = "✅ Location sent to Discord!";
+            } else {
+              output.innerText = "❌ Failed to send location.";
             }
-          }
-        );
+          }).catch(error => {
+            output.innerText = "❌ Error sending request: " + error;
+          });
+        },
+        function(error) {
+          output.innerText = "❌ Location access denied or failed.";
+        });
       } else {
-        output.innerText = "❌ Geolocation is not supported by this browser.";
+        output.innerText = "❌ Geolocation not supported.";
       }
     }
   </script>
 
 </body>
 </html>
+
