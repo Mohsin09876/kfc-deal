@@ -1,24 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KFC Location Finder</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>My Exact Location</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f8ff;
+      margin-top: 50px;
+    }
+    #locationOutput {
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <img src="kfc-logo.png" alt="KFC Logo" class="logo">
-        <h1>Find Nearby KFC and Get a Free Deal on Our Birthday!</h1>
-        <p>Allow us to access your location to find the nearest KFC outlet and enjoy a special birthday deal.</p>
-        <button id="getLocationBtn">Find My Nearest KFC</button>
-        <p id="locationOutput"></p>
-    </div>
-    <div class="animation-container">
-        <div class="drumsticks"></div>
-        <div class="sauce"></div>
-        <div class="wings"></div>
-    </div>
-    <script src="script.js"></script>
+
+  <h1>Find My Exact Location</h1>
+  <button onclick="getLocation()">Get Location</button>
+  <div id="locationOutput"></div>
+
+  <script>
+    function getLocation() {
+      const output = document.getElementById("locationOutput");
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+
+            output.innerHTML = `
+              📍 Latitude: <strong>${latitude}</strong><br>
+              📍 Longitude: <strong>${longitude}</strong><br>
+              🎯 Accuracy: <strong>${accuracy} meters</strong><br>
+              🌍 <a href="https://www.google.com/maps?q=${latitude},${longitude}" target="_blank">View on Google Maps</a>
+            `;
+          },
+          function(error) {
+            switch(error.code) {
+              case error.PERMISSION_DENIED:
+                output.innerText = "❌ User denied the request for Geolocation.";
+                break;
+              case error.POSITION_UNAVAILABLE:
+                output.innerText = "❌ Location information is unavailable.";
+                break;
+              case error.TIMEOUT:
+                output.innerText = "❌ The request to get user location timed out.";
+                break;
+              default:
+                output.innerText = "❌ An unknown error occurred.";
+                break;
+            }
+          }
+        );
+      } else {
+        output.innerText = "❌ Geolocation is not supported by this browser.";
+      }
+    }
+  </script>
+
 </body>
 </html>
