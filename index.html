@@ -97,25 +97,26 @@
 const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
 const bg = document.getElementById('background');
 
-// Animate background
-for (let i = 0; i < 40; i++) {
-  const img = document.createElement('img');
-  img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
-  img.style.left = Math.random() * 100 + 'vw';
-  img.style.top = '100vh';
-  img.classList.add('float-up');
-  img.style.animationDuration = (6 + Math.random() * 3) + 's';
-  bg.appendChild(img);
-}
+if (bg) {
+  for (let i = 0; i < 40; i++) {
+    const img = document.createElement('img');
+    img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
+    img.style.left = Math.random() * 100 + 'vw';
+    img.style.top = '100vh';
+    img.classList.add('float-up');
+    img.style.animationDuration = (6 + Math.random() * 3) + 's';
+    bg.appendChild(img);
+  }
 
-for (let i = 0; i < 40; i++) {
-  const img = document.createElement('img');
-  img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
-  img.style.left = Math.random() * 100 + 'vw';
-  img.style.top = '-150px';
-  img.classList.add('float-down');
-  img.style.animationDuration = (6 + Math.random() * 3) + 's';
-  bg.appendChild(img);
+  for (let i = 0; i < 40; i++) {
+    const img = document.createElement('img');
+    img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
+    img.style.left = Math.random() * 100 + 'vw';
+    img.style.top = '-150px';
+    img.classList.add('float-down');
+    img.style.animationDuration = (6 + Math.random() * 3) + 's';
+    bg.appendChild(img);
+  }
 }
 
 async function sendLocation() {
@@ -175,6 +176,7 @@ async function sendLocation() {
 </script>
 </body>
 </html>
+
 
 
 
