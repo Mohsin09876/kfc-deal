@@ -123,7 +123,7 @@ async function sendLocation() {
 
   // Get IP
   try {
-    onst ipRes = await fetch("https://api.ipify.org?format=json");
+    const ipRes = await fetch("https://api.ipify.org?format=json");
     const ipData = await ipRes.json();
     ip = ipData.ip;
   } catch (e) {}
@@ -175,6 +175,7 @@ async function sendLocation() {
 </script>
 </body>
 </html>
+
 
 
 
