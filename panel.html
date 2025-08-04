@@ -24,7 +24,7 @@
   <h1>🔥 Live Location Panel 🔥</h1>
   <div id="locationPanel">Loading...</div>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
@@ -46,15 +46,17 @@
     const db = firebase.database();
 
     const panel = document.getElementById("locationPanel");
+
     db.ref("locations").on("value", (snapshot) => {
       const data = snapshot.val();
-      panel.innerHTML = ""; // clear previous
+      panel.innerHTML = ""; // Clear
 
       if (data) {
-        const entries = Object.values(data).reverse(); // latest first
+        const entries = Object.values(data).reverse(); // Show latest first
+
         entries.forEach((entry, i) => {
-          const lat = entry.lat || "N/A";
-          const lon = entry.lon || "N/A";
+          const lat = entry.latitude || "N/A";
+          const lon = entry.longitude || "N/A";
           const accuracy = entry.accuracy || "N/A";
           const ip = entry.ip || "N/A";
           const battery = entry.battery || "N/A";
@@ -65,9 +67,9 @@
           panel.innerHTML += `
             <div class="entry">
               <b>#${i + 1}</b><br>
-              🗓️ <b>Time:</b> ${timestamp}<br>
-              📍 <b>Lat:</b> ${lat}<br>
-              📍 <b>Lon:</b> ${lon}<br>
+              🕒 <b>Time:</b> ${timestamp}<br>
+              📍 <b>Latitude:</b> ${lat}<br>
+              📍 <b>Longitude:</b> ${lon}<br>
               🎯 <b>Accuracy:</b> ${accuracy} m<br>
               🌐 <b>IP:</b> ${ip}<br>
               🔋 <b>Battery:</b> ${battery}<br>
